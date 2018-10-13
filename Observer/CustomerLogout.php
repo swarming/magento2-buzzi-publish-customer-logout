@@ -31,29 +31,29 @@ class CustomerLogout implements \Magento\Framework\Event\ObserverInterface
     private $storeResolver;
 
     /**
-     * @var \Buzzi\Publish\Helper\ExceptsMarketing
+     * @var \Buzzi\Publish\Helper\AcceptsMarketing
      */
-    private $exceptsMarketingHelper;
+    private $acceptsMarketingHelper;
 
     /**
      * @param \Buzzi\Publish\Model\Config\Events $configEvents
      * @param \Buzzi\Publish\Api\QueueInterface $queue
      * @param \Buzzi\PublishCustomerLogout\Model\DataBuilder $dataBuilder
      * @param \Magento\Store\Api\StoreResolverInterface $storeResolver
-     * @param \Buzzi\Publish\Helper\ExceptsMarketing|null $exceptsMarketingHelper
+     * @param \Buzzi\Publish\Helper\AcceptsMarketing|null $acceptsMarketingHelper
      */
     public function __construct(
         \Buzzi\Publish\Model\Config\Events $configEvents,
         \Buzzi\Publish\Api\QueueInterface $queue,
         \Buzzi\PublishCustomerLogout\Model\DataBuilder $dataBuilder,
         \Magento\Store\Api\StoreResolverInterface $storeResolver,
-        \Buzzi\Publish\Helper\ExceptsMarketing $exceptsMarketingHelper = null
+        \Buzzi\Publish\Helper\AcceptsMarketing $acceptsMarketingHelper = null
     ) {
         $this->configEvents = $configEvents;
         $this->queue = $queue;
         $this->dataBuilder = $dataBuilder;
         $this->storeResolver = $storeResolver;
-        $this->exceptsMarketingHelper = $exceptsMarketingHelper ?: ObjectManager::getInstance()->get(\Buzzi\Publish\Helper\ExceptsMarketing::class);
+        $this->acceptsMarketingHelper = $acceptsMarketingHelper ?: ObjectManager::getInstance()->get(\Buzzi\Publish\Helper\AcceptsMarketing::class);
     }
 
     /**
@@ -67,7 +67,7 @@ class CustomerLogout implements \Magento\Framework\Event\ObserverInterface
         $storeId = $this->storeResolver->getCurrentStoreId();
 
         if (!$this->configEvents->isEventEnabled(DataBuilder::EVENT_TYPE, $storeId)
-            || !$this->exceptsMarketingHelper->isExcepts(DataBuilder::EVENT_TYPE, $storeId, $customer->getDataModel())
+            || !$this->acceptsMarketingHelper->isAccepts(DataBuilder::EVENT_TYPE, $storeId, $customer->getDataModel())
         ) {
             return;
         }
